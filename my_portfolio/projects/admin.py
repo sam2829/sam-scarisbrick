@@ -8,7 +8,7 @@ class ProjectAdmin(admin.ModelAdmin):
     """
     list_display = ('title', 'summary', 'created_at')
     search_fields = ('title', 'github', 'live_site', 'technologies')
-    list_filter = ('technologies')
+    list_filter = ['technologies']
 
     def save_model(self, request, obj, form, change):
         # Validate the image before saving
