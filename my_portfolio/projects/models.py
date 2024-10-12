@@ -1,5 +1,37 @@
 from django.db import models
 from technologies.models import Technology
+from django.core.exceptions import ValidationError  # Import ValidationError
+from django.core.files.images import get_image_dimensions
+
+
+def validate_image(file):
+    # Ensure the file is an image
+    valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
+    extension = file.name.split('.')[-1].lower()
+    if extension not in valid_extensions:
+        raise ValidationError(
+            f"Unsupported file extension. Allowed extensions are "
+            f"{valid_extensions}"
+        )
+
+        # Optionally, check the image dimensions
+    try:
+        # Check the file size (10MB maximum)
+        filesize = file.size
+        max_filesize = 10 * 1024 * 1024  # 10MB in bytes
+        if filesize > max_filesize:
+            raise ValidationError(
+                "The maximum file size that can be uploaded is 10MB."
+            )
+        width, height = get_image_dimensions(file)
+        max_dimension = 4096
+        if width > max_dimension or height > max_dimension:
+            raise ValidationError(
+                f"Image dimensions are too large. Maximum width and height"
+                f" allowed is {max_dimension}px."
+            )
+    except AttributeError:
+        raise ValidationError("Invalid image file.")
 
 
 class Project(models.Model):
@@ -9,6 +41,9 @@ class Project(models.Model):
     title = models.CharField(max_length=50)
     summary = models.TextField(max_length=200)
     overview = models.TextField(max_length=500)
+    image = models.ImageField(
+        upload_to='images/', blank=False, validators=[validate_image]
+    )
     github = models.URLField()
     live_site = models.URLField()
     created_at = models.DateTimeField(auto_now_add=True)
