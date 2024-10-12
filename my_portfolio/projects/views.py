@@ -2,6 +2,7 @@ from rest_framework import generics
 from .models import Project
 from .serializers import ProjectSerializer
 from .filters import ProjectFilter
+import django_filters 
 
 class ProjectList(generics.ListAPIView):
     """
