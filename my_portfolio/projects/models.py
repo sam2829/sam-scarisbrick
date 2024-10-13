@@ -2,6 +2,7 @@ from django.db import models
 from technologies.models import Technology
 from django.core.exceptions import ValidationError  # Import ValidationError
 from django.core.files.images import get_image_dimensions
+from cloudinary.models import CloudinaryField
 
 
 def validate_image(file):
@@ -41,9 +42,7 @@ class Project(models.Model):
     title = models.CharField(max_length=50)
     summary = models.TextField(max_length=200)
     overview = models.TextField(max_length=500)
-    image = models.ImageField(
-        upload_to='images/', blank=False, validators=[validate_image]
-    )
+    image = CloudinaryField('images', blank=False, validators=[validate_image])
     github = models.URLField()
     live_site = models.URLField()
     created_at = models.DateTimeField(auto_now_add=True)
