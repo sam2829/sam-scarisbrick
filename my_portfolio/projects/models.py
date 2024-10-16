@@ -3,12 +3,22 @@ from technologies.models import Technology
 from django.core.exceptions import ValidationError  # Import ValidationError
 from django.core.files.images import get_image_dimensions
 from cloudinary.models import CloudinaryField
+import os
 
 
 def validate_image(file):
+    # If no new file is being uploaded, skip validation
+    if not hasattr(file, 'file') or not file.file:
+        return
+    if hasattr(file, 'url'):
+        # Extract the file extension from the Cloudinary URL
+        extension = os.path.splitext(file.url)[-1].lower().replace('.', '')
+    else:
+        # Fallback for local files
+        extension = os.path.splitext(file.name)[-1].lower().replace('.', '')
     # Ensure the file is an image
     valid_extensions = ['jpg', 'jpeg', 'png', 'gif']
-    extension = file.name.split('.')[-1].lower()
+   
     if extension not in valid_extensions:
         raise ValidationError(
             f"Unsupported file extension. Allowed extensions are "
