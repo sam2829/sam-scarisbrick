@@ -69,9 +69,9 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
 
-    'projects',
-    'technologies',
-    'emailapp',
+    'my_portfolio.projects',
+    'my_portfolio.technologies',
+    'my_portfolio.emailapp',
 ]
 
 SITE_ID = 1
